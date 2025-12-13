@@ -1,0 +1,130 @@
+Port and Button Assignments.
+
+CTRE CAN Ports
+Port	Device			Description
+-----------------------------------------------------------------------------------
+21      CANdle          The CTRE CANdle LED controller
+
+Motor CAN Ports
+Port	Device			Description
+-----------------------------------------------------------------------------------
+1       TalonFX         FL drive motor.
+2       TalonFX         FL steer motor.
+3       TalonFX         FR drive motor.
+4       TalonFX         FR steer motor.
+5       TalonFX         RL drive motor.
+6       TalonFX         RL steer motor.
+7       TalonFX         RR drive motor.
+8       TalonFX         RR steer motor.
+
+
+Encoders
+Port    Type            Description
+-----------------------------------------------------------------------------------             
+1       CanCoder        FL encoder
+2       CanCoder        FR encoder
+3       CanCoder        RL encoder
+4       CanCoder        RR encoder
+
+
+PWM Ports
+Port	Device			Description
+-----------------------------------------------------------------------------------
+
+
+PDP Ports
+Port	Device			Description
+-----------------------------------------------------------------------------------
+20      REV PDH         REV power distribution Hub.
+20      CTRE PDB        CTRE distribution board.
+
+
+PCM 0 Ports
+Port	Device blk-pos	Description
+-----------------------------------------------------------------------------------
+       
+
+PCM 1 Ports (REV PH)
+Port	Device blk-pos	Description
+-----------------------------------------------------------------------------------
+
+
+Digital I/O Ports
+Port	Device			Description
+-----------------------------------------------------------------------------------
+
+
+Analog I/O Ports
+Port	Device			Description
+-----------------------------------------------------------------------------------
+
+
+Driver GamePad - Left Joystick
+Button Name				Function
+-----------------------------------------------------------------------------------
+Y Axis					Forward/Backward driving.
+X Axis                  Left/Right strafe (sideways movement).
+
+
+Driver GamePad - Right Joystick
+Button Name				Function
+-----------------------------------------------------------------------------------
+X Axis                  Rotate.
+
+
+Driver GamePad - Buttons
+Button Name				Function
+-----------------------------------------------------------------------------------
+LEFT_TRIGGER            
+RIGHT_TRIGGER           
+LEFT_BUMPER             Slow Mode (hold)
+RIGHT_BUMPER            Alternate Rotation (hold + R Stick) - not implemented yet
+POV_0 (DPAD UP)
+POV_90 (DPAD RIGHT)     Park Wheels      
+POV_180 (DPAD DOWN)
+POV_270 (DPAD LEFT)             
+BACK                    
+START                   Reset Field Orientation
+A                       Toggle Field Relative
+B                       
+X                       
+Y                       
+
+
+Utility GamePad - Left Joystick
+Button Name				Function
+-----------------------------------------------------------------------------------
+Y Axis                  
+
+
+Utility GamePad - Right Joystick
+Button Name				Function
+-----------------------------------------------------------------------------------
+
+
+Utility GamePad - Buttons
+Button Name				Function
+-----------------------------------------------------------------------------------
+
+
+Dashboard Indicators/Controls
+Name					Type			Description
+-----------------------------------------------------------------------------------
+AutoTarget				boolean			True when targeting code is running.
+TargetLocked			boolean			True when targeting completed with target
+                                        detected.
+Disabled				boolean			True when robot is disabled.
+Auto Mode				boolean			True when robot is in autonomous mode.
+Teleop Mode				boolean			True when robot is in teleop mode.
+FMS						boolean			True when robot is connected to the FMS.
+Brakes					boolean			True when drive motors are in brake mode.
+Low Battery				boolean			True when battery is low.
+Overload				boolean			True when brownout has occurred.
+Auto Program            Chooser         List of autonomous programs.
+Autonomous active       boolean         True if any auto program is active.
+Field Oriented          boolean         True when swerve drive is in field orientation mode.
+Alternate Drive         boolean         True when alternate driving mode is enabled.
+CompressorEnabled       boolean         True when/to enable compresspr.
+LowPressure             boolean         Toggles true/false when pressure is low.
+AirPressure             numeric         Actual high side air pressure.
+
