@@ -22,7 +22,7 @@ import edu.wpi.first.wpilibj.DriverStation;
  */
 public final class Constants
 {
-	public static String		PROGRAM_NAME = "ORF26-12.29.25";
+	public static String		PROGRAM_NAME = "ORF26-01.08.26";
 
 	public static Robot			robot;
 
@@ -45,9 +45,9 @@ public final class Constants
     
     // CAMERAS 
 
-    // the names of the cameras in the PhotonVision software
+    // The names of the cameras in the PhotonVision software
 
-    //Limelight Constants:
+    // Limelight Constants:
 	public static final double DONT_SEE_TAG_WAIT_TIME = 1;
 	public static final double POSE_VALIDATION_TIME = 0.3;
 
