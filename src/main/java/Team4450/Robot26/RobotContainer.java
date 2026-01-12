@@ -204,7 +204,7 @@ public class RobotContainer
 
 		driveBase.setDefaultCommand(driveCommand);
 
-        SmartDashboard.putNumber("Test Motor Power", 0);
+	// Test Motor Power dashboard entry removed; flywheel start is code-controlled via Constants.FLYWHEEL_DEFAULT_START_PERCENT
 
 		//Start the compressor, PDP and camera feed monitoring Tasks.
 
@@ -324,6 +324,13 @@ public class RobotContainer
 			.onTrue(new InstantCommand(driveBase::setX));
 			
 		// -------- Utility controller buttons ----------
+
+		// Driver controller A/B used for flywheel start/stop (TestSubsystem currently drives the motor)
+		new Trigger(() -> driverController.getAButton())
+			.onTrue(new InstantCommand(testSubsystem::start));
+
+		new Trigger(() -> driverController.getBButton())
+			.onTrue(new InstantCommand(testSubsystem::stop));
 
 	}
 

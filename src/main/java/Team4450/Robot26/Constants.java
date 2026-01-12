@@ -76,6 +76,31 @@ public final class Constants
     public static double[] FLYWHEEL_SPEED_TABLE = {0.57, 0.595, 0.69, 0.715, 0.73, 0.82, 0.86};
     public static double[] FLYWHEEL_SPEED_DISTANCE_TABLE = {40, 56, 90, 95, 103, 127, 152};
 
+    // ---------------- Turret motion profiling constants ---------------------------------
+    // Turret defaults (internal units are degrees/sec and degrees/sec^2).
+    // These are used as defaults; the runtime code exposes RPM-based tunables for convenience.
+    // Max angular velocity for turret (degrees per second). Tune to your hardware limits.
+    public static final double TURRET_MAX_VELOCITY_DEG_PER_SEC = 180.0;
+    // Max angular acceleration for turret (degrees per second squared). Tune to your hardware limits.
+    public static final double TURRET_MAX_ACCELERATION_DEG_PER_SEC2 = 360.0;
+    // Default turret velocity/accel expressed in RPM units for dashboard convenience.
+    // 1 rotation = 360 degrees, 1 RPM = 6 deg/sec
+    public static final double TURRET_DEFAULT_MAX_VELOCITY_RPM = TURRET_MAX_VELOCITY_DEG_PER_SEC / 6.0; // 30 RPM
+    public static final double TURRET_DEFAULT_MAX_ACCEL_RPMS = TURRET_MAX_ACCELERATION_DEG_PER_SEC2 / 6.0; // 60 RPM/s
+    // Enable/disable acceleration smoothing (true = enabled)
+    public static final boolean TURRET_ACCELERATION_ENABLED = true;
+    // When within this many degrees, snap to setpoint and zero velocity.
+    public static final double TURRET_ANGLE_TOLERANCE_DEG = 0.5;
+    // -------------------------------------------------------------------------------------
+
+    // Flywheel tuning defaults
+    // Default target RPM for flywheel (used as a manual override/starting value)
+    public static final double FLYWHEEL_DEFAULT_TARGET_RPM = 1315.0;
+    // Default flywheel acceleration in RPM per second (used for ramping if implemented)
+    public static final double FLYWHEEL_DEFAULT_ACCEL_RPMS = 20000.0;
+    // Default open-loop start percent for flywheel when controlled by code only (0.0 - 1.0)
+    public static final double FLYWHEEL_DEFAULT_START_PERCENT = 0.5; // 50% output
+
     // What is the LCD
 	// LCD display line number constants showing class where the line is set.
 	public static final int		LCD_1 = 1;	    // Robot, Auto Commands.
