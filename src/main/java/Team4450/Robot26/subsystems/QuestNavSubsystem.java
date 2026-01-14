@@ -41,7 +41,9 @@ public class QuestNavSubsystem extends SubsystemBase {
     PoseFrame[] poseFrames;
 
     /** Creates a new QuestNavSubsystem. */
-    public QuestNavSubsystem() {
+    private DriveBase drivebase;
+    public QuestNavSubsystem(DriveBase drivebase) {
+        this.drivebase = drivebase;
         questNav = new QuestNav();
 
         resetToZeroPose();
@@ -98,15 +100,6 @@ public class QuestNavSubsystem extends SubsystemBase {
     public void periodic() {
         // https://github.com/LimelightVision/limelight-examples/tree/main/java-wpilib/swerve-megatag-odometry
         // https://docs.limelightvision.io/docs/docs-limelight/getting-started/summary
-        SmartDashboard.putBoolean("LimelightEnabled: ", limelightEnabled);
-        if (limelightEnabled) {
-            LimelightHelpers.PoseEstimate mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
-            if (mt1.tagCount >= 2) {  // Only trust measurement if we see multiple tags
-                                      // RobotContainer.driveBase.updateOdometryLimelight(mt1.pose, mt1.timestampSeconds);
-                Util.consoleLog("Because the limelight sees 2 or more tags with will set the robot position with the limelight position.");
-            }
-        }
-
         if (questNav.isTracking()) {
             // This method will be called once per scheduler run
             SmartDashboard.putString("qTranformedPose: ", getQuestRobotPose().toString());
@@ -124,11 +117,12 @@ public class QuestNavSubsystem extends SubsystemBase {
             if(Constants.UPDATE_QUESTNAV) {
                 for (PoseFrame questFrame : poseFrames) {
                     Util.consoleLog(String.valueOf(questFrame.questPose3d().getX()));
+                    
+                    Util.consoleLog("Quest Timestamp");
+                    Util.consoleLog(String.valueOf(questFrame.dataTimestamp()));
 
-                    // Get the pose of the Quest
-                    // Pose2d questPose3d = questFrame.questPose3d();
-                    // Get timestamp for when the data was sent
-                    double timestamp = questFrame.dataTimestamp();
+                    // Is the dataTimestamp in seconds
+                    drivebase.addVisionMeasurement(questFrame.questPose3d().toPose2d(), questFrame.dataTimestamp());
 
                     // Transform by the mount pose to get your robot pose
                     // Pose2d robotPose = questPose3d.transformBy(ROBOT_TO_QUEST.inverse());

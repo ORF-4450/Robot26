@@ -40,12 +40,12 @@ public class Turret extends SubsystemBase {
         double xDiff = 0;
         double yDiff = 0;
         if (Constants.alliance == Alliance.Blue) {
-            xDiff = Constants.GOAL_BLUE_X - robotPosition.getX();
-            yDiff = Constants.GOAL_BLUE_Y + robotPosition.getY();
+            xDiff = Constants.HUB_BLUE_X - robotPosition.getX();
+            yDiff = Constants.HUB_BLUE_Y + robotPosition.getY();
         // If red side
         } else if (Constants.alliance == Alliance.Red) {
-            xDiff = Constants.GOAL_RED_X + robotPosition.getX();
-            yDiff = Constants.GOAL_RED_Y - robotPosition.getY();
+            xDiff = Constants.HUB_RED_X + robotPosition.getX();
+            yDiff = Constants.HUB_RED_Y - robotPosition.getY();
         } else {
             // Error
         }
@@ -57,12 +57,12 @@ public class Turret extends SubsystemBase {
         double xDiff = 0;
         double yDiff = 0;
         if (Constants.alliance == Alliance.Blue) {
-            xDiff = Constants.GOAL_BLUE_X - robotPosition.getX();
-            yDiff = Constants.GOAL_BLUE_Y + robotPosition.getY();
+            xDiff = Constants.HUB_BLUE_X - robotPosition.getX();
+            yDiff = Constants.HUB_BLUE_Y + robotPosition.getY();
         // If red side
         } else if (Constants.alliance == Alliance.Red) {
-            xDiff = Constants.GOAL_RED_X + robotPosition.getX();
-            yDiff = Constants.GOAL_RED_Y - robotPosition.getY();
+            xDiff = Constants.HUB_RED_X + robotPosition.getX();
+            yDiff = Constants.HUB_RED_Y - robotPosition.getY();
         } else {
             // Error
         }

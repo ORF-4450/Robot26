@@ -35,6 +35,7 @@ public class DriveBase extends SubsystemBase
     private CommandSwerveDrivetrain     sdsDriveBase = TunerConstants.createDrivetrain();
 
     public PigeonWrapper                gyro = new PigeonWrapper(sdsDriveBase.getPigeon2());
+    public Pose2d robotPose = null;
     
     private final Telemetry     		logger = new Telemetry(kMaxSpeed);
     // Field2d object creates the field display on the simulation and gives us an API
@@ -59,8 +60,7 @@ public class DriveBase extends SubsystemBase
             .withRotationalDeadband(kMaxAngularRate * ROTATION_DEADBAND) // Add deadbands
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
 
-    public DriveBase()
-    {
+    public DriveBase() {
         Util.consoleLog();
 
         // Add gyro as a Sendable. Updates the dashboard heading indicator automatically.
@@ -126,7 +126,10 @@ public class DriveBase extends SubsystemBase
         updateModulePoses(sdsDriveBase);
 
         SmartDashboard.putNumber("Gyro angle", getYaw());
-        SmartDashboard.putString("Robot pose", getPose().toString());
+        SmartDashboard.putString("Robot od pose", getPose().toString());
+        if (robotPose != null) {
+            SmartDashboard.putString("Robot pose", robotPose.toString());
+        }
     }
 
     public void drive(double throttle, double strafe, double rotation)
@@ -269,6 +272,14 @@ public class DriveBase extends SubsystemBase
     {
         SmartDashboard.putBoolean("Brakes", neutralModeBrake);
         SmartDashboard.putBoolean("Field Oriented", fieldRelativeDriving);
+    }
+
+    // AddVisionUpdate
+    public void addVisionMeasurement(Pose2d pose, double timestampSeconds) {
+        // Use the visionBuffer
+
+        // Basic vision update that just sets the pose, this is good enough for testing if it is working
+        robotPose = pose;
     }
 
     /**

@@ -7,7 +7,7 @@ public class VisionPose {
     public long timestamp;
     public VisionPose nextNode;
 
-    VisionPose(Pose3d pose, long timestamp) {
+    public VisionPose(Pose3d pose, long timestamp) {
         this.pose = pose;
         this.timestamp = timestamp;
     }

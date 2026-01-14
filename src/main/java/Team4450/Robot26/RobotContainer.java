@@ -1,4 +1,3 @@
-
 package Team4450.Robot26;
 
 import static Team4450.Robot26.Constants.*;
@@ -11,6 +10,8 @@ import Team4450.Robot26.subsystems.Candle;
 import Team4450.Robot26.subsystems.TestSubsystem;
 import Team4450.Robot26.subsystems.DriveBase;
 import Team4450.Robot26.subsystems.ShuffleBoard;
+import Team4450.Robot26.subsystems.VisionSubsystem;
+import Team4450.Robot26.subsystems.QuestNavSubsystem;
 import Team4450.Robot26.subsystems.LimelightHelpers;
 import Team4450.Lib.MonitorPDP;
 import Team4450.Lib.Util;
@@ -46,9 +47,12 @@ public class RobotContainer
 
 	public static ShuffleBoard			 shuffleBoard;
 	public static DriveBase				 driveBase;
+    public static VisionSubsystem        visionSubsystem;
+    public static QuestNavSubsystem      questNavSubsystem;
+
 	public final DriveCommand			 driveCommand;
+
     public TestSubsystem testSubsystem;
-	//private Candle        				 candle = new Candle(CTRE_CANDLE);
 	
 	// Subsystem Default Commands.
 
@@ -75,7 +79,6 @@ public class RobotContainer
 	private XboxController			driverController =  new XboxController(DRIVER_PAD);
 	public static XboxController	utilityController = new XboxController(UTILITY_PAD);
 
-	// private PowerDistribution	pdp = new PowerDistribution(REV_PDB, PowerDistribution.ModuleType.kCTRE);
 	private PowerDistribution		pdp = new PowerDistribution(REV_PDB, PowerDistribution.ModuleType.kRev);
 
 	// Compressor class controls the CTRE/REV Pneumatics control Module.
@@ -83,9 +86,7 @@ public class RobotContainer
 	//private Compressor				pcm = new Compressor(PneumaticsModuleType.REVPH);
 
 	private MonitorPDP     			monitorPDPThread;
-	private MonitorCompressorPH		monitorCompressorThread;
-    private CameraFeed				cameraFeed;
-    
+
 	// Trajectories we load manually.
 	//public static PathPlannerTrajectory	ppTestTrajectory;
 
@@ -96,8 +97,7 @@ public class RobotContainer
 	/**
 	 * The container for the robot. Contains subsystems, Opertor Interface devices, and commands.
 	 */
-	public RobotContainer() throws Exception
-	{
+	public RobotContainer() throws Exception {
 		Util.consoleLog();
 
         this.testSubsystem = new TestSubsystem();
@@ -126,17 +126,6 @@ public class RobotContainer
 		// Later code will read that setting from the dashboard and turn 
 		// compressor on or off in response to dashboard setting.
  		
-		boolean compressorEnabled = true;	// Default if no property.
-
-		if (robotProperties != null) 
-			compressorEnabled = Boolean.parseBoolean(robotProperties.getProperty("CompressorEnabledByDefault"));
-		
-		SmartDashboard.putBoolean("CompressorEnabled", compressorEnabled);
-
-		// Reset PDB & PCM sticky faults.
-    
-		resetFaults();
-
 		// Invert driving joy sticks Y axis so + values mean forward.
 		// Invert driving joy sticks X axis so + values mean right.
 	  
@@ -148,6 +137,8 @@ public class RobotContainer
 		shuffleBoard = new ShuffleBoard();
 
 		driveBase = new DriveBase();
+        visionSubsystem = new VisionSubsystem(driveBase);
+        questNavSubsystem = new QuestNavSubsystem(driveBase);
 
 		// if (RobotBase.isReal()) 
 		// {

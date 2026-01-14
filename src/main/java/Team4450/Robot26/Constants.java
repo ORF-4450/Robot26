@@ -1,4 +1,3 @@
-
 package Team4450.Robot26;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
@@ -62,6 +61,7 @@ public final class Constants
 
     public static String LIMELIGHT_LEFT = "limelight-left";
     public static String LIMELIGHT_RIGHT = "limelight-right";
+    public static int VISION_BUFFER_SIZE = 1;
 
     // Assume all field measurements are in meters
     // Field Limits

@@ -1,12 +1,13 @@
 package Team4450.Robot26.subsystems;
 
-import static Team4450.Robot26.Constants.alliance;
-
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import Team4450.Lib.Util;
 import Team4450.Robot26.Constants;
 import Team4450.Robot26.utility.RobotOrientation;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.lang.Math;
+import Team4450.Robot26.utility.VisionBuffer;
+import Team4450.Robot26.utility.VisionPose;
+import edu.wpi.first.math.geometry.Pose2d;
 
 public class VisionSubsystem extends SubsystemBase {
     // Info from: https://docs.limelightvision.io/docs/docs-limelight/pipeline-apriltag/apriltags
@@ -32,7 +33,11 @@ public class VisionSubsystem extends SubsystemBase {
     // SetRobotOrientation assumes a centered (see the map generator) or blue-corner origin. CCW-positive, 0 degrees -> facing red alliance wall in FRC.
     //
     DriveBase drivebase;
+    int i = 0;
+
     public VisionSubsystem(DriveBase drivebase) {
+
+        // Need to add a null check for the cameras
         this.drivebase = drivebase;
         // Init Left and Right Limelight
         //
@@ -42,6 +47,7 @@ public class VisionSubsystem extends SubsystemBase {
         // Firstly, run SetRobotOrientation()
         // Next, run SetIMUMode() // Use mode 2 when enabled and mode 1 when disabled, so put this in a disable function
         //
+        
         RobotOrientation rO = drivebase.getRobotOrientation(); // IDK if RobotOrientation works correctly, look there to see
         
         zeroLimelightIMU(rO);
@@ -58,13 +64,15 @@ public class VisionSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        i++;
         boolean useLeftLimelight = true;
         boolean useRightLimelight = true;
         // Get latest pose estimage from each camera
-        //
-        //
+        
         LimelightHelpers.PoseEstimate left_mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(Constants.LIMELIGHT_LEFT);
+        // Pose2d left_mt2 = LimelightHelpers.getBotPose2d_wpiBlue(Constants.LIMELIGHT_LEFT);
         LimelightHelpers.PoseEstimate right_mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(Constants.LIMELIGHT_RIGHT);
+        // Pose2d right_mt2 = LimelightHelpers.getBotPose2d_wpiBlue(Constants.LIMELIGHT_RIGHT);
 
         // If the angular velocity is greater than 720 degrees per second ignore the vision update
         //
@@ -74,31 +82,63 @@ public class VisionSubsystem extends SubsystemBase {
         }
 
         // Get rid of any result that says we are out of the field
-        
+
         // IDK what units the getX() return
-        if (Math.abs(left_mt2.pose.getX()) > Constants.FIELD_MAX_X) {
-            useLeftLimelight = false;
-        }
-
-        if (Math.abs(right_mt2.pose.getX()) > Constants.FIELD_MAX_X) {
-            useRightLimelight = false;
-        }
-
         // IDK what units the getY() return
-        if (Math.abs(left_mt2.pose.getY()) > Constants.FIELD_MAX_Y) {
-            useLeftLimelight = false;
+        
+        if (left_mt2 != null) {
+            if (i % 200 == 0) {
+                // Util.consoleLog("Left" + String.valueOf(left_mt2.getX()));
+                Util.consoleLog("Left Tags: " + String.valueOf(left_mt2.rawFiducials.length));
+            }
+            if (Math.abs(left_mt2.pose.getX()) > Constants.FIELD_MAX_X) {
+                useLeftLimelight = false;
+            }
+
+            if (Math.abs(left_mt2.pose.getY()) > Constants.FIELD_MAX_Y) {
+                useLeftLimelight = false;
+            }
+
+            if (left_mt2.rawFiducials.length < 1) {
+                useLeftLimelight = false;
+            }
+
+            if (useLeftLimelight) {
+                Util.consoleLog("Add left vision");
+                drivebase.addVisionMeasurement(left_mt2.pose, left_mt2.timestampSeconds);
+            }
         }
 
-        if (Math.abs(right_mt2.pose.getY()) > Constants.FIELD_MAX_Y) {
-            useRightLimelight = false;
+        if (right_mt2 != null) {
+            if (i % 200 == 0) {
+                // Util.consoleLog("Right" + String.valueOf(right_mt2.getX()));
+                Util.consoleLog("Right Tags: " + String.valueOf(right_mt2.rawFiducials.length));
+            }
+            if (Math.abs(right_mt2.pose.getX()) > Constants.FIELD_MAX_X) {
+                useRightLimelight = false;
+            }
+
+            if (Math.abs(right_mt2.pose.getY()) > Constants.FIELD_MAX_Y) {
+                useRightLimelight = false;
+            }
+
+            if (right_mt2.rawFiducials.length < 1) {
+                useRightLimelight = false;
+            }
+
+            if (useRightLimelight) {
+                drivebase.addVisionMeasurement(right_mt2.pose, right_mt2.timestampSeconds);
+            }
         }
-        
+
+
         // Get rid of the result if the yaw of the resulting pose is impossible
         //
         // I think the yaw is between -180 and 180 instead of 0 - 360
         // if (left_mt2.pose.getRotation().getDegrees() < 0 || left_mt2.pose.getRotation().getDegrees() > 360 || right_mt2.pose.getRotation().getDegrees() < 0 || right_mt2.pose.getRotation().getDegrees() > 360) {
         //     return;
         // }
+        
     }
 
     public void zeroLimelightIMU(RobotOrientation rO) { // Set to IMU mode 0 to diable the internal limelight IMU
