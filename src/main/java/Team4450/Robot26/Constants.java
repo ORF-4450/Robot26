@@ -68,14 +68,37 @@ public final class Constants
     public static double FIELD_MAX_X = 16.54;
     public static double FIELD_MAX_Y = 8.07;
 
-    // HUB Positions
+    public static boolean WELDED_FIELD = false;
+
+    // HUB Positions (Center of the HUB)
     
+    // THESE ARE ALL IN INCHES AS THAT IS WHAT THE FIELD IS DEFINED IN
+
     // Blue
-    public static double HUB_BLUE_X = 10;
-    public static double HUB_BLUE_Y = 10;
+    public static Pose3d HUB_BLUE_ANDYMARK_POSE = new Pose3d(181.56, 158.32, 44.25, Rotation3d.kZero);
+    public static Pose3d HUB_BLUE_WELDED_POSE = new Pose3d(182.11, 158.84, 44.25, Rotation3d.kZero);
     // Red
-    public static double HUB_RED_X = 10;
-    public static double HUB_RED_Y = 10;
+    public static Pose3d HUB_RED_ANDYMARK_POSE = new Pose3d(468.56, 158.32, 44.25, Rotation3d.kZero);
+    public static Pose3d HUB_RED_WELDED_POSE = new Pose3d(469.11, 158.84, 44.25, Rotation3d.kZero);
+
+    public static double NEUTRAL_BLUE_ZONE_BARRIER_X = 180;
+    public static double NEUTRAL_RED_ZONE_BARRIER_X = 470;
+
+    public static Pose2d FERRY_BLUE_OUTPOST_CORNER = new Pose2d(50, 25, Rotation2d.kZero);
+    public static Pose2d FERRY_BLUE_BLANK_CORNER = new Pose2d(50, 291.64, Rotation2d.kZero);
+    
+    public static Pose2d FERRY_RED_OUTPOST_CORNER = new Pose2d(600.12, 291.64, Rotation2d.kZero);
+    public static Pose2d FERRY_RED_BLANK_CORNER = new Pose2d(600.12, 25, Rotation2d.kZero);
+
+    public static double FIELD_MIDDLE_Y = 158.32;
+
+    public static double ROBOT_HEADING_KP = 0;
+    public static double ROBOT_HEADING_KI = 0;
+    public static double ROBOT_HEADING_KI_MAX = 0;
+    public static double ROBOT_HEADING_KD = 0;
+    // public static double ROBOT_HEADING_KF = 0;
+    public static double ROBOT_HEADING_TOLERANCE_DEG = 2;
+    // public static double ROBOT_HEADING_MAX_OUTPUT = 1;
 
     public static double FLYWHEEL_MAX_THEORETICAL_RPM = 4000;
 
@@ -84,6 +107,7 @@ public final class Constants
     // Interpolation table
     public static double[] FLYWHEEL_SPEED_TABLE = {0.57, 0.595, 0.69, 0.715, 0.73, 0.82, 0.86};
     public static double[] FLYWHEEL_SPEED_DISTANCE_TABLE = {40, 56, 90, 95, 103, 127, 152};
+    public static double[] FUEL_AIR_TIME_TABLE_SEC = {0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6};
 
     // What is the LCD
 	// LCD display line number constants showing class where the line is set.

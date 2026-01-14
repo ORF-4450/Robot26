@@ -1,6 +1,6 @@
 package Team4450.Robot26.subsystems;
 
-import Team4450.Robot26.Constants;
+import static Team4450.Robot26.Constants.*;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -32,20 +32,20 @@ public class Turret extends SubsystemBase {
 
     public double getNeededFlywheelSpeed(double distToGoal) {
         double targetVelocity = interpolateFlywheelSpeedByDistance(distToGoal);
-        return targetVelocity * Constants.FLYWHEEL_MAX_THEORETICAL_RPM; // Normalize the target velocity by the max theoretical
+        return targetVelocity * FLYWHEEL_MAX_THEORETICAL_RPM; // Normalize the target velocity by the max theoretical
     }
 
     public double distToGoal(Pose2d robotPosition) {
         // If blue side
         double xDiff = 0;
         double yDiff = 0;
-        if (Constants.alliance == Alliance.Blue) {
-            xDiff = Constants.HUB_BLUE_X - robotPosition.getX();
-            yDiff = Constants.HUB_BLUE_Y + robotPosition.getY();
+        if (alliance == Alliance.Blue) {
+            xDiff = HUB_BLUE_ANDYMARK_POSE.getX() - robotPosition.getX();
+            yDiff = HUB_BLUE_ANDYMARK_POSE.getY() + robotPosition.getY();
         // If red side
-        } else if (Constants.alliance == Alliance.Red) {
-            xDiff = Constants.HUB_RED_X + robotPosition.getX();
-            yDiff = Constants.HUB_RED_Y - robotPosition.getY();
+        } else if (alliance == Alliance.Red) {
+            xDiff = HUB_RED_ANDYMARK_POSE.getX() - robotPosition.getX();
+            yDiff = HUB_RED_ANDYMARK_POSE.getY() - robotPosition.getY();
         } else {
             // Error
         }
@@ -56,13 +56,13 @@ public class Turret extends SubsystemBase {
         // If blue side
         double xDiff = 0;
         double yDiff = 0;
-        if (Constants.alliance == Alliance.Blue) {
-            xDiff = Constants.HUB_BLUE_X - robotPosition.getX();
-            yDiff = Constants.HUB_BLUE_Y + robotPosition.getY();
+        if (alliance == Alliance.Blue) {
+            xDiff = HUB_BLUE_ANDYMARK_POSE.getX() - robotPosition.getX();
+            yDiff = HUB_BLUE_ANDYMARK_POSE.getY() + robotPosition.getY();
         // If red side
-        } else if (Constants.alliance == Alliance.Red) {
-            xDiff = Constants.HUB_RED_X + robotPosition.getX();
-            yDiff = Constants.HUB_RED_Y - robotPosition.getY();
+        } else if (alliance == Alliance.Red) {
+            xDiff = HUB_RED_ANDYMARK_POSE.getX() - robotPosition.getX();
+            yDiff = HUB_RED_ANDYMARK_POSE.getY() - robotPosition.getY();
         } else {
             // Error
         }
@@ -71,16 +71,16 @@ public class Turret extends SubsystemBase {
     }
 
     public double interpolateFlywheelSpeedByDistance(double distToGoal) {
-        double lowerPoint = Constants.FLYWHEEL_SPEED_DISTANCE_TABLE[0];
+        double lowerPoint = FLYWHEEL_SPEED_DISTANCE_TABLE[0];
 
         int lowerPointIndex = 0;
 
-        double higherPoint = Constants.FLYWHEEL_SPEED_DISTANCE_TABLE[Constants.FLYWHEEL_SPEED_DISTANCE_TABLE.length - 1];
-        int higherPointIndex = Constants.FLYWHEEL_SPEED_DISTANCE_TABLE.length - 1;
+        double higherPoint = FLYWHEEL_SPEED_DISTANCE_TABLE[FLYWHEEL_SPEED_DISTANCE_TABLE.length - 1];
+        int higherPointIndex = FLYWHEEL_SPEED_DISTANCE_TABLE.length - 1;
 
         double currentDistance;
-        for (int i = Constants.FLYWHEEL_SPEED_DISTANCE_TABLE.length - 2; i > 0; i--){
-            currentDistance = Constants.FLYWHEEL_SPEED_TABLE[i];
+        for (int i = FLYWHEEL_SPEED_DISTANCE_TABLE.length - 2; i > 0; i--){
+            currentDistance = FLYWHEEL_SPEED_TABLE[i];
             if(currentDistance > distToGoal){
                 if (currentDistance < higherPoint) {
                     higherPoint = currentDistance;
@@ -92,11 +92,11 @@ public class Turret extends SubsystemBase {
                     lowerPointIndex = i;
                 }
             }else if (currentDistance == distToGoal){
-                return Constants.FLYWHEEL_SPEED_TABLE[i];
+                return FLYWHEEL_SPEED_TABLE[i];
             }
         }
-        double lowerSpeed = Constants.FLYWHEEL_SPEED_TABLE[lowerPointIndex];
-        double higherSpeed = Constants.FLYWHEEL_SPEED_TABLE[higherPointIndex];
+        double lowerSpeed = FLYWHEEL_SPEED_TABLE[lowerPointIndex];
+        double higherSpeed = FLYWHEEL_SPEED_TABLE[higherPointIndex];
 
         return linearInterpolate(lowerSpeed, higherSpeed, (distToGoal - lowerPoint) / (higherPoint - lowerPoint));
     }
