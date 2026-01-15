@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -107,6 +108,8 @@ public class RobotContainer {
 	
 	private static String 			autonomousCommandName = "none";
 
+	private static PIDController		headingPID;
+
 	/**
 	 * The container for the robot. Contains subsystems, Opertor Interface devices, and commands.
 	 */
@@ -152,6 +155,8 @@ public class RobotContainer {
         visionSubsystem = new VisionSubsystem(driveBase);
         questNavSubsystem = new QuestNavSubsystem(driveBase);
 
+		headingPID = new PIDController(Constants.ROBOT_HEADING_KP, Constants.ROBOT_HEADING_KI, Constants.ROBOT_HEADING_KD);
+
 		// Create any persistent commands.
 
 		// Set any subsystem Default commands.
@@ -192,8 +197,8 @@ public class RobotContainer {
 		 							() -> driverController.getLeftY(),
 									driverController.getLeftXDS(), 
 									driverController.getRightXDS(),
-									driverController);
-
+									driverController.getRightYDS(),
+									driverController, headingPID);
 		driveBase.setDefaultCommand(driveCommand);
 
         // IDK if I have to init SmartDashboard data

@@ -9,6 +9,7 @@ import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import Team4450.Lib.Util;
+import static Team4450.Robot26.Constants.*;
 import Team4450.Robot26.Constants.DriveConstants;
 import Team4450.Robot26.subsystems.SDS.CommandSwerveDrivetrain;
 import Team4450.Robot26.subsystems.SDS.Telemetry;
@@ -17,13 +18,13 @@ import Team4450.Robot26.utility.AdvantageScope;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.networktables.NTSendable;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import Team4450.Robot26.utility.RobotOrientation;
+import edu.wpi.first.wpilibj.DriverStation;
 
 /**
  * This class wraps the SDS drive base subsystem allowing us to add/modify drive base
@@ -129,7 +130,7 @@ public class DriveBase extends SubsystemBase {
         SmartDashboard.putNumber("Gyro angle", getYaw());
         SmartDashboard.putString("Robot od pose", getPose().toString());
         if (robotPose != null) {
-            SmartDashboard.putString("Robot pose", robotPose.toString());
+            SmartDashboard.putString("Robot pose pose pose pose", robotPose.toString());
         }
     }
 
@@ -145,14 +146,12 @@ public class DriveBase extends SubsystemBase {
                         .withRotationalRate(rotation * maxRotRate));
         else if (headingSwivelMode) {
             // Get the angle target to the hub
-            // Calculate p-loop for targeting the hub
             sdsDriveBase.setControl(
                 driveRobot.withVelocityX(throttle * maxSpeed) 
                         .withVelocityY(strafe * maxSpeed) 
                         .withRotationalRate(rotation * maxRotRate));
         } else if (ferryingSwivelMode) {
             // Figure out to target left or right of the hub based on the y
-            // Calculate the p-loop for targeting
             sdsDriveBase.setControl(
                 driveRobot.withVelocityX(throttle * maxSpeed) 
                         .withVelocityY(strafe * maxSpeed) 
@@ -298,6 +297,57 @@ public class DriveBase extends SubsystemBase {
 
         // Basic vision update that just sets the pose, this is good enough for testing if it is working
         robotPose = pose;
+    }
+
+    public double getAngleToAim(Pose2d targetPose) {
+        Pose2d currentPose = getPose();
+    
+        double deltaX = targetPose.getX() - currentPose.getX();
+        double deltaY = targetPose.getY() - currentPose.getY();
+
+        double distance = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+
+        double airTime;
+
+        int lowerPointIndex = 0;    
+        double lowerPoint = FLYWHEEL_SPEED_DISTANCE_TABLE[lowerPointIndex];
+
+        int higherPointIndex = FLYWHEEL_SPEED_DISTANCE_TABLE.length - 1;
+        double higherPoint = FLYWHEEL_SPEED_DISTANCE_TABLE[higherPointIndex];
+
+        double currentDistance;
+        for (int i = FLYWHEEL_SPEED_DISTANCE_TABLE.length - 2; i > 0; i--){
+            currentDistance = FLYWHEEL_SPEED_DISTANCE_TABLE[i];
+            if (currentDistance > distance) {
+                if (currentDistance < higherPoint) {
+                    higherPoint = currentDistance;
+                    higherPointIndex = i;
+                }
+            } else if (currentDistance < distance) {
+                if (currentDistance >= lowerPoint) {
+                    lowerPoint = currentDistance;
+                    lowerPointIndex = i;
+                }
+            } else if (currentDistance == distance) {
+                airTime = FUEL_AIR_TIME_TABLE_SEC[i];
+                break;
+            }
+        }
+
+        double lowerTime = FUEL_AIR_TIME_TABLE_SEC[lowerPointIndex];
+        double higherTime = FUEL_AIR_TIME_TABLE_SEC[higherPointIndex];
+
+        airTime = lowerTime + ((higherTime - lowerTime) * (distance - lowerPoint) / (higherPoint - lowerPoint));
+
+        double xVelocityOffset = ((driveField.VelocityX * airTime) / 100) / 2.54;
+        double yVelocityOffset = ((driveField.VelocityY * airTime) / 100) / 2.54;
+        
+        deltaX += xVelocityOffset;
+        deltaY += yVelocityOffset;
+
+        double angleToAim = Math.toDegrees(Math.atan2(deltaY, deltaX));
+
+        return angleToAim;
     }
 
     /**
