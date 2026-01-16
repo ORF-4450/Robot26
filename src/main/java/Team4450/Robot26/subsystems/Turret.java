@@ -84,7 +84,7 @@ public class Turret extends SubsystemBase {
     public Pose2d getGoalPose() {
         // If blue side
         if (alliance == Alliance.Blue) {
-            return HUB_BLUE_ANDYMARK_POSE;
+            return HUB_BLUE_WELDED_POSE;
         // If red side
         } else if (alliance == Alliance.Red) {
             return HUB_RED_ANDYMARK_POSE;

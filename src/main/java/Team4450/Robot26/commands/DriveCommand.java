@@ -122,7 +122,7 @@ public class DriveCommand extends Command
             targetHeading = Math.toDegrees(Math.atan2(rotationYSupplier.getAsDouble(), rotationXSupplier.getAsDouble()));
         }
 
-        double rotation = headingPID.calculate(driveBase.getYaw180(), targetHeading);
+        double rotation = -headingPID.calculate(driveBase.getYaw180(), -targetHeading);
         double throttle = throttleSupplier.getAsDouble();
         double strafe = strafeSupplier.getAsDouble();
 

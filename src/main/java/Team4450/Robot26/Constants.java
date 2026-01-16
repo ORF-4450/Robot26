@@ -87,6 +87,7 @@ public final class Constants {
     public static double HUB_RED_Y = 4.034;
 
     // Blue
+    // Comment out the not welded field
     public static Pose2d HUB_BLUE_ANDYMARK_POSE = new Pose2d(4.611, 4.021, Rotation2d.kZero);
     public static Pose2d HUB_BLUE_WELDED_POSE = new Pose2d(4.625, 4.034, Rotation2d.kZero);
     // Red
@@ -104,7 +105,7 @@ public final class Constants {
 
     public static double FIELD_MIDDLE_Y = 4.021;
 
-    public static double ROBOT_HEADING_KP = 0;
+    public static double ROBOT_HEADING_KP = 0.012; // 0.03 seems resonable on the test field
     public static double ROBOT_HEADING_KI = 0;
     public static double ROBOT_HEADING_KI_MAX = 0;
     public static double ROBOT_HEADING_KD = 0;
