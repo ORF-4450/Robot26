@@ -22,7 +22,7 @@ import edu.wpi.first.wpilibj.DriverStation;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-	public static String		PROGRAM_NAME = "ORF26-01.09.26";
+	public static String		PROGRAM_NAME = "ORF26-01.21.26";
 
 	public static Robot			robot;
 
@@ -43,7 +43,7 @@ public final class Constants {
     
     // Pneumatic valve controller port assignments.
     
-    // CAMERAS 
+    // Cameras 
 
     // The names of the cameras in the PhotonVision software
 
@@ -196,8 +196,4 @@ public final class Constants {
         public static final Pose2d	DEFAULT_STARTING_POSE = new Pose2d(0, 0, Rotation2d.kZero);
         public static final Pose3d	DEFAULT_STARTING_POSE_3D = new Pose3d(0, 0, 0, Rotation3d.kZero);
     }
-
-  //-------------------- No student code above this line ------------------------------------------------------
-
-}
-;
+};
