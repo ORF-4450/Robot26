@@ -4,7 +4,11 @@ package Team4450.Robot26;
 import static Team4450.Robot26.Constants.*;
 
 import Team4450.Lib.*;
+
+// Here we import our customized WPILib classes instead of WPILib classes.
 import Team4450.Robot26.wpilib.TimedRobot;
+
+//import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
@@ -126,7 +130,9 @@ public class Robot extends TimedRobot
       // either autonomous or teleop modes.
 
       robotContainer = new RobotContainer();
-            
+
+      enableLiveWindowInTest(true);
+
     } catch (Exception e) {
       Util.logException(e);
       endCompetition();
@@ -308,7 +314,7 @@ public class Robot extends TimedRobot
     // telop with LW enabled. Our code displays more detailed test/debug
     // data in LW mode.
 
-    LiveWindow.enableAllTelemetry();
+    //LiveWindow.enableAllTelemetry();
 
     teleopInit();
 
