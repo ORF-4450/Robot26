@@ -261,8 +261,8 @@ public class Robot extends TimedRobot {
     // Set Limelight imu mode to 2
     RobotContainer.visionSubsystem.enableInternalIMU();
 
-    if (RobotContainer.drivebase.limelightOffsetPose.getX() != 0 && RobotContainer.drivebase.limelightOffsetPose.getY() != 0) {
-        RobotContainer.drivebase.robotPose = new Pose2d(RobotContainer.drivebase.limelightOffsetPose.getX(), RobotContainer.drivebase.limelightOffsetPose.getY(), RobotContainer.drivebase.limelightOffsetPose.getRotation());
+    if (RobotContainer.drivebase.limelightPoseEstimate.getX() != 0 && RobotContainer.drivebase.limelightPoseEstimate.getY() != 0) {
+        RobotContainer.drivebase.robotPose = new Pose2d(RobotContainer.drivebase.limelightPoseEstimate.getX(), RobotContainer.drivebase.limelightPoseEstimate.getY(), RobotContainer.drivebase.limelightPoseEstimate.getRotation());
         RobotContainer.drivebase.resetOdometry(RobotContainer.drivebase.robotPose);
         RobotContainer.questNavSubsystem.resetQuestOdometry(new Pose3d(RobotContainer.drivebase.robotPose));
     } else {

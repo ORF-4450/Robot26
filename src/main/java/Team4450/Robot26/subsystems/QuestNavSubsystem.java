@@ -13,7 +13,7 @@ import Team4450.Robot26.utility.ConsoleEveryX;
 
 public class QuestNavSubsystem extends SubsystemBase {
     QuestNav questNav;
-    Transform3d ROBOT_TO_QUEST = new Transform3d(Constants.ROBOT_TO_QUEST_X, Constants.ROBOT_TO_QUEST_Y, Constants.ROBOT_TO_QUEST_Z, Rotation3d.kZero);
+    Transform3d ROBOT_TO_QUEST = new Transform3d(Constants.ROBOT_TO_QUEST.getX(), Constants.ROBOT_TO_QUEST.getY(), Constants.ROBOT_TO_QUEST.getZ(), Constants.ROBOT_TO_QUEST.getRotation());
     
     final Pose3d nullPose = new Pose3d(-1, -1, -1, Rotation3d.kZero);
     final Pose3d zeroPose = new Pose3d(0, 0, 0, Rotation3d.kZero);
@@ -24,10 +24,13 @@ public class QuestNavSubsystem extends SubsystemBase {
     PoseFrame[] poseFrames;
 
     /** Creates a new QuestNavSubsystem. */
-    private DriveBase drivebase;
-    public QuestNavSubsystem(DriveBase drivebase) {
+    private Drivebase drivebase;
+    private double resetTimer = 0; // Change this to a real timer at some point;
+    public QuestNavSubsystem(Drivebase drivebase) {
         this.drivebase = drivebase;
         questNav = new QuestNav();
+
+        this.resetTimer = 0;
 
         resetToZeroPose();
     }
@@ -76,6 +79,18 @@ public class QuestNavSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        // If the x or y difference from the robots current pose to the limelight estimate pose update the current quest estimate for the position
+        if (resetTimer > 200) {
+            if (drivebase.limelightPoseEstimate.getX() > 0.2 || drivebase.limelightPoseEstimate.getY() > 0.2) {
+                Pose3d limelightEstimatePose = new Pose3d(drivebase.limelightPoseEstimate);
+                resetQuestOdometry(limelightEstimatePose);
+                Util.consoleLog("Updated quest odomety to pose: ", limelightEstimatePose.toString());
+                resetTimer = 0;
+            }
+        } else {
+            resetTimer++;
+        }
+
         if (questNav.isConnected()) {
             SmartDashboard.putBoolean("Quest Connected", true);
         } else {
