@@ -26,7 +26,7 @@ import static edu.wpi.first.units.Units.*;
  * Torque control requires Phoemix Pro license.
  * Set any parameters before calling desiredPosition(). Automatically
  * stops motor when robot disabled. Default parameters work with Kraken x60. This
- * should be tuned for your application. See CTRE and WPILib  * doc for information 
+ * should be tuned for your application. See CTRE and WPILib doc for information 
  * about the parameters and how to tune this controller:
  * <a href="https://docs.wpilib.org/en/stable/docs/software/advanced-controls/introduction/tuning-flywheel.html">WPILib</a>, 
  * <a href="https://v6.docs.ctr-electronics.com/en/latest/docs/api-reference/device-specific/talonfx/closed-loop-requests.html">CTRE</a>

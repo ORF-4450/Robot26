@@ -15,6 +15,12 @@ Operates the robot **Helios** for FRC game **Rebuilt**.
 ### If RobotLib gets an update:
 Download the RobotLib.json file from the RobotLib Github repo and drop it into the vendordeps folder inside the project folder. Build the project.
 *********************************************************************************************************
+Version 26.4.0
+
+*   As of the end of 2026 Worlds (05-01-26). From Tobys repo.
+
+R. Corn, July 8 2026
+
 Version 26.3.0
 
 *   Created new TunerConstants.java from competition robot (TunerX) and applied our customizations.

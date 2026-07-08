@@ -1,14 +1,16 @@
-
 package Team4450.Robot26;
 
 import static Team4450.Robot26.Constants.*;
 
+import Team4450.Robot26.commands.Shoot;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+
 import Team4450.Lib.*;
-
-// Here we import our customized WPILib classes instead of WPILib classes.
+import Team4450.Robot26.utility.RobotOrientation;
 import Team4450.Robot26.wpilib.TimedRobot;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 
-//import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -26,43 +28,42 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  * Main.java file in the project.
  */
 
-public class Robot extends TimedRobot 
-{
-  private RobotContainer  robotContainer;
+public class Robot extends TimedRobot {
+  private RobotContainer robotContainer;
 
   /**
    * This function is called when the robot is first started up and should be used
    * for any initialization code.
    */
   @Override
-  public void robotInit() 
-  {
+  public void robotInit() {
     try {
-      robot = this;   // Stored in Constants.
-
-      LCD.clearAll();
-      LCD.printLine(LCD_1, "Mode: RobotInit");
+      robot = this; // Stored in Constants.
 
       // Set up our custom logger.
 
       Util.CustomLogger.setup(true);
 
-      // The wpilib classes that underlie this class generate a lot of warning
-      // messages that flood the Riolog and make it almost unusable. The warnings 
-      // are about our code in the robotPeriodic() function taking longer than .02 
-      // sec to execute. It's very hard to stay under this limit. So...copied classes 
+      // The WPIlib classes that underlie this class generate a lot of warning
+      // messages that flood the Riolog and make it almost unusable. The warnings
+      // are about our code in the robotPeriodic() function taking longer than .02
+      // sec to execute. It's very hard to stay under this limit. So...copied classes
       // from the wpilib name space to inside this project and modified them to allow
-      // us to control these warnings and log some of them to our log file. The warnings 
-      // from IterativeRobotBase can be turned on/off and the timeout set. Any warnings 
-      // from that class will go to our log file. The CommandScheduler also generates 
-      // essentially the same warnings but copying that is getting beyond what we should
-      // be doing, so we just set its internal timeout (because it allows us to) to a 
-      // longer value to turn off its warnings. It does not log to our log file. These 
-      // warnings can be turned back on at times to check if we are having significant 
-      // overruns but turned off if things look ok. This is a major hack, the downside 
-      // of which is that with each yearly release of Wpilib the copied files would have
-      // to be recopied and remodified to make sure our copies are up to date. 
-      // IterativeRobotBase and Watchdog have been modified. TimedRobot is needed to 
+      // us to control these warnings and log some of them to our log file. The
+      // warnings
+      // from IterativeRobotBase can be turned on/off and the timeout set. Any
+      // warnings
+      // from that class will go to our log file. The CommandScheduler also generates
+      // essentially the same warnings but copying that is getting beyond what we
+      // should
+      // be doing, so we just set its internal timeout (because it allows us to) to a
+      // longer value to turn off its warnings. It does not log to our log file. These
+      // warnings can be turned back on at times to check if we are having significant
+      // overruns but turned off if things look ok. This is a major hack, the downside
+      // of which is that with each yearly release of Wpilib the copied files would
+      // have
+      // to be recopied and remodified to make sure our copies are up to date.
+      // IterativeRobotBase and Watchdog have been modified. TimedRobot is needed to
       // pull in these modified classes. Look for "4450" in the code for the mods.
       //
       // Note that the periodic function is called very .02 sec. If our code runs too
@@ -78,18 +79,18 @@ public class Robot extends TimedRobot
 
       // Set Java to catch any uncaught exceptions and record them in our log file.
 
-      Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() 
-      {
-        public void uncaughtException(Thread t, Throwable e) 
-        {
+      Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+        public void uncaughtException(Thread t, Throwable e) {
           Util.consoleLog("Uncaught exception from thread " + t);
           Util.logException(e);
           robot.endCompetition();
         }
       });
 
-      if (RobotBase.isSimulation()) Util.consoleLog("Simulated Robot");
-      if (RobotBase.isReal()) Util.consoleLog("Real Robot");
+      if (RobotBase.isSimulation())
+        Util.consoleLog("Simulated Robot");
+      if (RobotBase.isReal())
+        Util.consoleLog("Real Robot");
 
       // Create SendableVersion object so it can be sent to the dashboard and also
       // log some of it's information.
@@ -97,47 +98,58 @@ public class Robot extends TimedRobot
       SendableVersion.INSTANCE.init(PROGRAM_NAME);
 
       // Note: under simulation, this information will not be correct.
-      Util.consoleLog("%s compiled by %s at %s (branch=%s, commit=%s)", SendableVersion.INSTANCE.getProgramVersion(),
-          SendableVersion.INSTANCE.getUser(), SendableVersion.INSTANCE.getTime(), SendableVersion.INSTANCE.getBranch(),
+      Util.consoleLog("%s compiled by %s at %s (branch=%s, commit=%s)",
+          SendableVersion.INSTANCE.getProgramVersion(),
+          SendableVersion.INSTANCE.getUser(), SendableVersion.INSTANCE.getTime(),
+          SendableVersion.INSTANCE.getBranch(),
           SendableVersion.INSTANCE.getCommit());
 
-      //Util.consoleLog("manifest path=%s", SendableVersion.INSTANCE.getPath());
-
       // Send program version to the dashboard.
-      SmartDashboard.putString("Program", PROGRAM_NAME);
+      SmartDashboard.putString(Constants.SmartDashboardKeys.PROGRAM, PROGRAM_NAME);
 
-      // Log RobotLib and WPILib versions we are using. Note Robolib WPILib version can be different
+      // Log RobotLib and WPILib versions we are using. Note Robolib WPILib version
+      // can be different
       // than robot WPILib version. Should be the same for best results.
       Util.consoleLog("Robot WPILib=%s  Java=%s", WPILibVersion.Version, System.getProperty("java.version"));
       Util.consoleLog("RobotLib=%s", LibraryVersion.version);
 
-      // Note: Any Sendables added to SmartDashboard or Shuffleboard are sent to the DS on every
-      // loop of a TimedRobot. In this case it means that the SendableVersion data would be sent
-      // to the DS every 20ms even though it does not change. Sendables must be added to the SDB
-      // or SB in order to be sent so its a catch-22 with static Sendables. So we add the SendableVersion
-      // here and then a few lines below delete it from the sendable system. This puts the version
+      // Note: Any Sendables added to SmartDashboard or Shuffleboard are sent to the
+      // DS on every
+      // loop of a TimedRobot. In this case it means that the SendableVersion data
+      // would be sent
+      // to the DS every 20ms even though it does not change. Sendables must be added
+      // to the SDB
+      // or SB in order to be sent so its a catch-22 with static Sendables. So we add
+      // the SendableVersion
+      // here and then a few lines below delete it from the sendable system. This puts
+      // the version
       // info onto the dashboard but removes it from further updates.
 
-      // Note: As of 2023 WPILib, deleting a Sendable actually removes the data from the dashboard
-      // so we had to replace adding the SendableVersion as a Sendable (putdata) and add the data
+      // Note: As of 2023 WPILib, deleting a Sendable actually removes the data from
+      // the dashboard
+      // so we had to replace adding the SendableVersion as a Sendable (putdata) and
+      // add the data
       // manually to the dashboard in SendableVersion class.
 
       SendableVersion.INSTANCE.updateDashBoard();
 
-      // Instantiate our RobotContainer class. This will perform all necessary setup of the various
-      // subsystems, commands and other items that are needed to to be ready before we start doing
+      // Warm up the Pathfinder so that you can create paths to follow on the fly
+      // during teleop
+
+      // PathfindingCommand.warmupCommand().schedule();
+
+      // Instantiate our RobotContainer class. This will perform all necessary setup
+      // of the various
+      // subsystems, commands and other items that are needed to to be ready before we
+      // start doing
       // either autonomous or teleop modes.
 
       robotContainer = new RobotContainer();
-
-      enableLiveWindowInTest(true);
 
     } catch (Exception e) {
       Util.logException(e);
       endCompetition();
     }
-
-    Util.consoleLog(functionMarker);
   }
 
   /**
@@ -150,23 +162,28 @@ public class Robot extends TimedRobot
    * and SmartDashboard integrated updating.
    */
   @Override
-  public void robotPeriodic() 
-  {
+  public void robotPeriodic() {
     // This function is called approx every .02 second.
-    // Runs the Scheduler. It is responsible for polling buttons, adding newly-scheduled
-    // commands, running already-scheduled commands, removing finished or interrupted commands,
-    // and running subsystem periodic() methods. Scheduler must be called from the robot's periodic
+    // Runs the Scheduler. It is responsible for polling buttons, adding
+    // newly-scheduled
+    // commands, running already-scheduled commands, removing finished or
+    // interrupted commands,
+    // and running subsystem periodic() methods. Scheduler must be called from the
+    // robot's periodic
     // function in order for anything in the Command-based framework to work.
 
-    // WARNING: This function is called repeatedly even when robot is DISABLED. This means the
-    // periodic method in all subsystems will be called even when disabled. The scheduler will
-    // stop commands when disabled but not subsystems. It is also possible to set Commands to run
+    // WARNING: This function is called repeatedly even when robot is DISABLED. This
+    // means the
+    // periodic method in all subsystems will be called even when disabled. The
+    // scheduler will
+    // stop commands when disabled but not subsystems. It is also possible to set
+    // Commands to run
     // when robot is disabled. This seems a bad idea...
 
     // The try/catch will catch any exceptions thrown in the commands run by the
-    // scheduler and record them in our log file then stops execution of this program.
-
-    if (tracing & isEnabled()) FunctionTracer.INSTANCE.enterFunction("Robot.robotPeriodic");
+    // scheduler and record them in our log file then stops execution of this
+    // program.
+    //
 
     try {
       CommandScheduler.getInstance().run();
@@ -174,28 +191,26 @@ public class Robot extends TimedRobot
       Util.logException(e);
       this.endCompetition();
     }
-
-		if (tracing & isEnabled()) FunctionTracer.INSTANCE.exitFunction("Robot.robotPeriodic");
   }
 
   /**
    * This function is called once each time the robot enters Disabled mode.
    */
   @Override
-  public void disabledInit()
-  {
-    Util.consoleLog();
+  public void disabledInit() {
+    // This is here because Pathplanner Autos don't stop the robot when it is
+    // disabled.
+    RobotContainer.drivebase.stop();
 
-    LCD.printLine(LCD_1, "Mode: Disabled");
-
-    // This is here because Pathplanner Autos don't stop the robot when it is disabled.
-    //RobotContainer.driveBase.stop(); rich
-
-    // Reset driver station LEDs.
+    // Set Limelight IMU mode to 1
+    // I don't really like calling this here, but something can only be disabled
+    // after enabled has ran so everything should exist
+    RobotOrientation rO = RobotContainer.drivebase.getRobotOrientation(); // IDK if RobotOrientation works
+                                                                          // correctly,
+                                                                          // look there to see
+    RobotContainer.visionSubsystem.zeroLimelightIMU(rO);
 
     RobotContainer.shuffleBoard.resetLEDs();
-
-    Util.consoleLog(functionMarker);
   }
 
   /**
@@ -203,82 +218,87 @@ public class Robot extends TimedRobot
    * should be nothing here.
    */
   @Override
-  public void disabledPeriodic() 
-  {
+  public void disabledPeriodic() {
   }
+
+  public long driveStart;
+  public long shootStart;
+  public long shootTwo;
+
+  public Shoot command;
 
   /**
    * This function is called once at the start of autonomous mode and schedules
    * the autonomous command selected by your {@link RobotContainer} class.
    */
+  private boolean flipAuto = SmartDashboard.putBoolean(Constants.SmartDashboardKeys.FLIP_AUTO, false);
+
   @Override
-  public void autonomousInit() 
-  {
-    Util.consoleLog(functionMarker);
+  public void autonomousInit() {
+    this.flipAuto = SmartDashboard.getBoolean(Constants.SmartDashboardKeys.FLIP_AUTO, true);
 
-    LCD.clearAll();
+    SmartDashboard.putBoolean(Constants.SmartDashboardKeys.DISABLED, false);
+    SmartDashboard.putBoolean(Constants.SmartDashboardKeys.AUTO_MODE, true);
 
-    LCD.printLine(LCD_1, "Mode: Auto - No Program");
-
-    SmartDashboard.putBoolean("Disabled", false);
-    SmartDashboard.putBoolean("Auto Mode", true);
+    RobotContainer.drivebase.pigeonWrapper.setCurrentYaw(0);
 
     robotContainer.getMatchInformation();
 
-    robotContainer.resetFaults();
-    
     // RobotContainer function determines which auto command is selected to run.
-
     Command autonomousCommand = robotContainer.getAutonomousCommand();
+    // Command autonomousCommand = new PathPlannerAuto(RobotContainer.getAutonomousCommand(), this.flipAuto);
 
     // schedule the autonomous command (example)
-
     try {
-      if (autonomousCommand != null) CommandScheduler.getInstance().schedule(autonomousCommand);
+      if (autonomousCommand != null)
+        CommandScheduler.getInstance().schedule(autonomousCommand);
     } catch (Exception e) {
       Util.logException(e);
       this.endCompetition();
     }
-
-    Util.consoleLog(functionMarker);
+    //
   }
 
   /**
    * This function is called periodically during autonomous. Technically there
-   * should be nothing here.
+   * should be nothing here as long as you are using pathplanner. Just
+   * because there is nothing here does not mean stuff is not running because
+   * all of the subsystem periodics are still running. Actually the subsystem
+   * periodics are also running when the robot is disabled.
    */
   @Override
-  public void autonomousPeriodic() 
-  {
+  public void autonomousPeriodic() {
   }
 
   /**
    * This function is called once at the start of teleop mode.
    */
   @Override
-  public void teleopInit() 
-  {
-    Util.consoleLog(functionMarker);
-
+  public void teleopInit() {
     robotContainer.getMatchInformation();
 
-    LCD.clearAll();
+    SmartDashboard.putBoolean(Constants.SmartDashboardKeys.DISABLED, false);
+    SmartDashboard.putBoolean(Constants.SmartDashboardKeys.TELEOP_MODE, true);
 
-    LCD.printLine(LCD_1, "Mode: Teleop  All=%s, Start=%d, FMS=%b, msg=%s", alliance.name(), location,
-                  DriverStation.isFMSAttached(), gameMessage);
+    // Set Limelight imu mode to 2
+    RobotContainer.visionSubsystem.enableInternalIMU();
 
-    SmartDashboard.putBoolean("Disabled", false);
-    SmartDashboard.putBoolean("Teleop Mode", true);
+    // Figure out how to reset the yaw at a good point in time
+    // RobotContainer.drivebase.pigeonWrapper.setCurrentYaw(0);
 
-    robotContainer.resetFaults();
-    //robotContainer.fixPathPlannerGyro(); rich // Because of this only use blue alliance during practice
+    if (RobotContainer.drivebase.limelightPoseEstimate.getX() != 0
+        && RobotContainer.drivebase.limelightPoseEstimate.getY() != 0) {
+      RobotContainer.drivebase.robotPose = new Pose2d(RobotContainer.drivebase.limelightPoseEstimate.getX(),
+          RobotContainer.drivebase.limelightPoseEstimate.getY(),
+          RobotContainer.drivebase.limelightPoseEstimate.getRotation());
+      RobotContainer.drivebase.resetOdometry(RobotContainer.drivebase.robotPose);
+    }
 
-    // Driving handled by DriveCommand which is default command for the DriveBase.
+    // robotContainer.fixPathPlannerGyro(); rich // Because of this only use blue
+    // alliance during practice
+
+    // Driving handled by DriveCommand which is default command for the Drivebase.
     // Other commands scheduled by joystick buttons.
-
-    if  (tracing) FunctionTracer.INSTANCE.reset();
-
-    Util.consoleLog(functionMarker);
   }
 
   /**
@@ -286,9 +306,7 @@ public class Robot extends TimedRobot
    * be nothing here.
    */
   @Override
-  public void teleopPeriodic() 
-  {
-    if (tracing) FunctionTracer.INSTANCE.printFunctions(Util.logPrintStream);
+  public void teleopPeriodic() {
   }
 
   @Override
@@ -299,12 +317,10 @@ public class Robot extends TimedRobot
    * This function is called once at the start of test mode.
    */
   @Override
-  public void testInit() 
-  {
+  public void testInit() {
     Util.consoleLog();
 
     // Cancels all running commands at the start of test mode.
-
     CommandScheduler.getInstance().cancelAll();
 
     // Next two lines launch teleop mode, but since we are in test
@@ -313,8 +329,10 @@ public class Robot extends TimedRobot
     // telop with LW enabled. Our code displays more detailed test/debug
     // data in LW mode.
 
-    //LiveWindow.enableAllTelemetry();
+    // What is LiveWindow
+    // LiveWindow.enableAllTelemetry();
 
+    RobotContainer.inTestMode = true;
     teleopInit();
 
     CommandScheduler.getInstance().enable();
@@ -324,7 +342,11 @@ public class Robot extends TimedRobot
    * This function is called periodically during test mode.
    */
   @Override
-  public void testPeriodic() 
-  {
+  public void testPeriodic() {
+  }
+
+  @Override
+  public void testExit() {
+    RobotContainer.inTestMode = false;
   }
 }
