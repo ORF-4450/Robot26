@@ -365,28 +365,28 @@ public class Drivebase extends SubsystemBase {
     return sdsDrivebase.getState().Pose;
   }
 
-    /**
-     * Returns current pose estimate for the robot.
-     * In this function the radians to radians conversion is because the input is
-     * incorrect somewhere
-     * 
-     * @return Robot pose.
-     */
-    public Pose2d getPose() {
-        if (RobotContainer.questNavSubsystem.useQuest()) {
+  /**
+   * Returns current pose estimate for the robot.
+   * In this function the radians to radians conversion is because the input is
+   * incorrect somewhere
+   * 
+   * @return Robot pose.
+   */
+  public Pose2d getPose() {
+      if (RobotContainer.questNavSubsystem.useQuest()) {
 
-            if(!SmartDashboard.getBoolean(Constants.SmartDashboardKeys.ROBOT_CURRENTLY_USING_QUEST, false)){ 
-                RobotContainer.questNavSubsystem.resetQuest2d(getODPose());
-            }
+          if(!SmartDashboard.getBoolean(Constants.SmartDashboardKeys.ROBOT_CURRENTLY_USING_QUEST, false)){ 
+              RobotContainer.questNavSubsystem.resetQuest2d(getODPose());
+          }
 
-            SmartDashboard.putBoolean(Constants.SmartDashboardKeys.ROBOT_CURRENTLY_USING_QUEST, true);
-            return RobotContainer.questNavSubsystem.getQuestPose();
+          SmartDashboard.putBoolean(Constants.SmartDashboardKeys.ROBOT_CURRENTLY_USING_QUEST, true);
+          return RobotContainer.questNavSubsystem.getQuestPose();
 
-        } else {
-            SmartDashboard.putBoolean(Constants.SmartDashboardKeys.ROBOT_CURRENTLY_USING_QUEST, false);
-            return getODPose();
-        }
-    }
+      } else {
+          SmartDashboard.putBoolean(Constants.SmartDashboardKeys.ROBOT_CURRENTLY_USING_QUEST, false);
+          return getODPose();
+      }
+  }
 
   // Get the sds ordometry rotation velocity in radians per second
   public double getRotVelocity() {
@@ -528,7 +528,8 @@ public class Drivebase extends SubsystemBase {
           modules[i].getCurrentState().angle.plus(Rotation2d.fromDegrees(-getYaw180())));
     }
 
-    field2d.getObject("Robot").setPose(new Pose2d(robotPose.getX(), robotPose.getY(), new Rotation2d(Math.toRadians(robotPose.getRotation().getRadians()))));
+    //field2d.getObject("Robot").setPose(new Pose2d(robotPose.getX(), robotPose.getY(), new Rotation2d(Math.toRadians(robotPose.getRotation().getRadians()))));
+    field2d.getObject("Robot").setPose(new Pose2d(robotPose.getX(), robotPose.getY(), new Rotation2d(Math.toRadians(robotPose.getRotation().getDegrees()))));
     field2d.getObject("Swerve Modules").setPoses(modulePoses);
   }
 
