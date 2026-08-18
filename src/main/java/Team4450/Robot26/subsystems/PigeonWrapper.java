@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  * Wrapper class for Pigeon2 gyro.
  */
 public class PigeonWrapper extends SubsystemBase {
-    public Pigeon2      pigeon;
+    public Pigeon2     pigeon;
     public double      startingYaw; // Starting yaw is in degrees
 
     public PigeonWrapper(Pigeon2 pigeon) {

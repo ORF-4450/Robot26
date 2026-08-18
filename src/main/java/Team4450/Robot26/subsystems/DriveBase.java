@@ -91,10 +91,10 @@ public class Drivebase extends SubsystemBase {
   public Drivebase() {
     Util.consoleLog();
 
-        // Add pigeon gyro as a Sendable. Updates the dashboard heading indicator
-        // automatically.
-        SmartDashboard.putData(Constants.SmartDashboardKeys.PIGEON_GYRO, pigeonWrapper);
-        SmartDashboard.putData(Constants.SmartDashboardKeys.FIELD2D, field2d);
+    // Add pigeon gyro as a Sendable. Updates the dashboard heading indicator
+    // automatically.
+    SmartDashboard.putData(Constants.SmartDashboardKeys.PIGEON_GYRO, pigeonWrapper);
+    SmartDashboard.putData(Constants.SmartDashboardKeys.FIELD2D, field2d);
 
     // Check Gyro.
     if (pigeonWrapper.getPigeon().isConnected())
@@ -232,7 +232,6 @@ public class Drivebase extends SubsystemBase {
         driveRobot.withVelocityX(throttle * maxSpeed)
             .withVelocityY(strafe * maxSpeed)
             .withRotationalRate(rotation * maxRotRate));
-
   }
 
   public void driveToNearestOpening() {

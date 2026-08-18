@@ -14,6 +14,7 @@
       "/LiveWindow/Ungrouped/Talon FX (v6) [7]": "Motor Controller",
       "/LiveWindow/Ungrouped/Talon FX (v6) [8]": "Motor Controller",
       "/Pose": "Field2d",
+      "/SmartDashboard/Auto Chooser": "String Chooser",
       "/SmartDashboard/Auto Program": "String Chooser",
       "/SmartDashboard/Field2d": "Field2d",
       "/SmartDashboard/Gyro2": "Gyro",
@@ -44,11 +45,13 @@
       },
       "/SmartDashboard/Field2d": {
         "Robot": {
+          "image": "C:\\Users\\Richard\\Workspace\\FRC Java\\Robot26\\resources\\robot.png",
           "length": 0.7365999817848206,
           "style": "Box/Image",
           "width": 0.7365999817848206
         },
         "Swerve Modules": {
+          "image": "C:\\Users\\Richard\\Workspace\\FRC Java\\Robot26\\resources\\swerve_module.png",
           "length": 0.30480000376701355,
           "width": 0.30480000376701355
         },
@@ -64,6 +67,12 @@
         }
       },
       "/SmartDashboard/Gyro2": {
+        "window": {
+          "name": "Pigeon Gyro",
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Pigeon Gyro": {
         "window": {
           "visible": true
         }
@@ -82,6 +91,9 @@
         "open": true
       },
       "SmartDashboard": {
+        "Version": {
+          "open": true
+        },
         "open": true
       }
     }
